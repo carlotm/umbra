@@ -1,0 +1,51 @@
+/////////////////////////////////////////////////
+// Buttons
+
+.btn {
+    background-color: $menta;
+    border: 0;
+    border-radius: 4px;
+    color: $mare;
+    cursor: pointer;
+    display: inline-block;
+    font-family: $main-font;
+    font-size: inherit;
+    font-weight: 600;
+    line-height: 1;
+    outline: 0;
+    padding: $aria / 1.5 $aria;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    text-transform: capitalize;
+    transition: all .15s ease-in-out;
+    vertical-align: middle;
+
+    &:hover {
+        background-color: $mare;
+        color: $white;
+    }
+
+    &--small {
+        padding: $aria / 2 $aria;
+        font-size: 90%;
+    }
+
+    &--transparent {
+        background-color: transparent;
+
+        &:hover {
+            background-color: $white;
+            color: $mare;
+        }
+    }
+
+    &--danger {
+        background-color: $pomodoro;
+        color: $white;
+
+        &:hover {
+            background-color: darken($pomodoro, 10);
+        }
+    }
+}

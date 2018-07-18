@@ -1,0 +1,49 @@
+/////////////////////////////////////////////////
+// Fonts
+
+@mixin font($f, $s, $w, $name: 'UmbraFont') {
+    @font-face {
+        font-family: $name;
+        font-style: $s;
+        font-weight: $w;
+        src: url('/assets/fonts/#{$f}.woff2') format('woff2'),
+        url('/assets/fonts/#{$f}.woff') format('woff');
+    }
+}
+
+@include font('HKGrotesk-BoldItalic',   italic, 700);
+@include font('HKGrotesk-Bold',         normal, 700);
+@include font('HKGrotesk-Italic',       italic, 500);
+@include font('HKGrotesk-Light',        normal, 400);
+@include font('HKGrotesk-MediumItalic', italic, 600);
+@include font('HKGrotesk-Medium',       normal, 600);
+@include font('HKGrotesk-Regular',      italic, 500);
+@include font('LovedbytheKing',         normal, normal, 'UmbraHeadingFont');
+
+$main-font: 'UmbraFont', sans-serif;
+$heading-font: 'UmbraHeadingFont', sans-serif;
+
+
+
+
+/////////////////////////////////////////////////
+// Colors
+
+$black:     #000;
+$white:     #fff;
+$sand:      #f9fafa;
+$mine:      #2c2c2c;
+$silver:    #f5f6f7;
+$topo:      #ccc;
+$mare:      #0d45e4;
+$menta:     #a9fbd7;
+$pomodoro:  #de3c3c;
+
+
+
+
+/////////////////////////////////////////////////
+// Misc
+
+$aria: 16px;
+

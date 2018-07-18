@@ -1,0 +1,109 @@
+$thumb-height: 16px !default;
+$track-height: 4px !default;
+$track-border-width: 0 !default;
+$track-border-color: transparent !default;
+
+@mixin track {
+    cursor: pointer;
+    height: $track-height;
+    transition: all .2s ease;
+    width: 100%;
+}
+
+@mixin thumb {
+    background: $mine;
+    border-radius: 8px;
+    cursor: pointer;
+    height: $thumb-height;
+    width: $thumb-height;
+}
+
+[type='range'] {
+    $track-color: $menta !default;
+    $track-radius: 4px !default;
+    -webkit-appearance: none; // sass-lint:disable-line no-vendor-prefixes
+    margin: 0;
+    width: 100%;
+
+    &:focus {
+        outline: 0;
+
+        &::-webkit-slider-runnable-track { // sass-lint:disable-line no-vendor-prefixes
+            background: $track-color;
+        }
+
+        &::-ms-fill-lower { // sass-lint:disable-line no-vendor-prefixes
+            background: $track-color;
+        }
+
+        &::-ms-fill-upper { // sass-lint:disable-line no-vendor-prefixes
+            background: $track-color;
+        }
+    }
+
+    &::-webkit-slider-runnable-track { // sass-lint:disable-line no-vendor-prefixes
+        @include track;
+        background: $track-color;
+        border: $track-border-width solid $track-border-color;
+        border-radius: $track-radius;
+    }
+
+    &::-webkit-slider-thumb { // sass-lint:disable-line no-vendor-prefixes
+        @include thumb;
+        -webkit-appearance: none; // sass-lint:disable-line no-vendor-prefixes
+        margin-top: ((-$track-border-width * 2 + $track-height) / 2) - ($thumb-height / 2);
+    }
+
+    &::-moz-range-track { // sass-lint:disable-line no-vendor-prefixes
+        @include track;
+        background: $track-color;
+        border: $track-border-width solid $track-border-color;
+        border-radius: $track-radius;
+    }
+
+    &::-moz-range-thumb { // sass-lint:disable-line no-vendor-prefixes
+        @include thumb;
+    }
+
+    &::-ms-track { // sass-lint:disable-line no-vendor-prefixes
+        @include track;
+        background: transparent;
+        border-color: transparent;
+        border-width: ($thumb-height / 2) 0;
+        color: transparent;
+    }
+
+    &::-ms-fill-lower { // sass-lint:disable-line no-vendor-prefixes
+        background: $track-color;
+        border: $track-border-width solid $track-border-color;
+        border-radius: $track-radius * 2;
+    }
+
+    &::-ms-fill-upper { // sass-lint:disable-line no-vendor-prefixes
+        background: $track-color;
+        border: $track-border-width solid $track-border-color;
+        border-radius: $track-radius * 2;
+    }
+
+    &::-ms-thumb { // sass-lint:disable-line no-vendor-prefixes
+        @include thumb;
+        margin-top: 0;
+    }
+}
+
+
+[type='radio'] {
+    -webkit-appearance: none; // sass-lint:disable-line no-vendor-prefixes
+    cursor: pointer;
+    display: none;
+    margin: 0 $aria / 4 0 0;
+    opacity: 0;
+
+    &:checked + label {
+        color: $mine;
+
+        &:after {
+            left: 4px;
+        }
+    }
+}

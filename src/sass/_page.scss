@@ -1,0 +1,31 @@
+/////////////////////////////////////////////////
+// Page layout
+
+.site-header {
+    left: 50%;
+    position: fixed;
+    text-align: center;
+    top: 14%;
+    transform: translateX(-50%);
+}
+
+.site-main {
+    height: 100%;
+}
+
+.site-footer {
+    background: $menta;
+    bottom: 0;
+    color: $mine;
+    display: flex;
+    font-size: 14px;
+    left: 0;
+    padding: $aria;
+    position: fixed;
+    width: 100%;
+    z-index: 4;
+
+    &__author {
+        flex: 1;
+    }
+}

@@ -1,0 +1,41 @@
+/////////////////////////////////////////////////
+// General
+
+html,
+body {
+    height: 100%;
+    min-height: 100%;
+}
+
+body {
+    color: $mine;
+    font-family: $main-font;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: .5px;
+    overflow: hidden;
+}
+
+h1 {
+    font-family: $heading-font;
+    font-size: 180px;
+    letter-spacing: -1px;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+a {
+    color: currentcolor;
+
+    &:visited,
+    &:active {
+        color: currentcolor;
+    }
+}
+
+input {
+    cursor: pointer;
+}
+

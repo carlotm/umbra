@@ -1,0 +1,131 @@
+//////////////////////////////////////////
+// Panel
+
+.panel {
+    $size: 260px;
+    $rangevalsize: 45px;
+    background-color: rgba($white, .9);
+    color: $mine;
+    flex: 0 0 $size;
+    padding: $aria;
+    z-index: 2;
+
+    &__head {
+        margin: $aria 0 $aria * 2 0;
+        display: inline-block;
+        position: relative;
+        z-index: 2;
+
+        &:after {
+            background: $menta;
+            content: '';
+            height: 8px;
+            width: 100%;
+            z-index: -1;
+            bottom: 0;
+            left: 0;
+            position: absolute;
+        }
+    }
+
+    &__field-title {
+        font-size: 14px;
+        padding: $aria $aria 0 $aria;
+    }
+
+    &__field {
+        min-height: 40px;
+        position: relative;
+        vertical-align: middle;
+
+        + #{&} {
+            margin-top: $aria * 2;
+        }
+    }
+
+    &__field--spaced {
+        padding-top: $aria * 2;
+    }
+
+    &__label {
+        display: block;
+        font-size: 14px;
+    }
+
+    &__field--radio {
+        display: inline-block;
+
+        + #{&} {
+            margin-left: $aria;
+        }
+
+        [type='radio'] {
+            -webkit-appearance: none; // sass-lint:disable-line no-vendor-prefixes
+            cursor: pointer;
+            display: none;
+            margin: 0 $aria / 4 0 0;
+            opacity: 0;
+
+            &:checked + label {
+                color: $mine;
+
+                &:after {
+                    left: 4px;
+                }
+            }
+        }
+    }
+
+    &__radio-label {
+        bottom: 0;
+        color: $topo;
+        cursor: pointer;
+        display: inline;
+        padding-left: 24px;
+        position: absolute;
+        transition: color .2s;
+        vertical-align: top;
+
+        &:last-child {
+            left: 100px;
+        }
+
+        &:after {
+            background-color: currentcolor;
+            border-radius: $aria;
+            content: '';
+            height: $aria;
+            left: 0;
+            position: absolute;
+            top: 0;
+            transition: left .25s;
+            width: $aria;
+        }
+    }
+
+    input {
+        bottom: 0;
+        left: 0;
+        position: absolute;
+
+        + span {
+            bottom: 0;
+            display: inline-block;
+            font-size: 12px;
+            height: $aria;
+            line-height: $aria;
+            position: absolute;
+            right: 0;
+            text-align: right;
+            vertical-align: text-top;
+            width: $rangevalsize;
+        }
+    }
+
+    [type="range"] {
+        height: $aria;
+        width: calc(100% - #{$rangevalsize} - #{$aria / 2});
+    }
+}
+
+
