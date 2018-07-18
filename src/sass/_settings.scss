@@ -6,8 +6,8 @@
         font-family: $name;
         font-style: $s;
         font-weight: $w;
-        src: url('/assets/fonts/#{$f}.woff2') format('woff2'),
-        url('/assets/fonts/#{$f}.woff') format('woff');
+        src: url('<%= BASE_URL %>assets/fonts/#{$f}.woff2') format('woff2'),
+        url('<%= BASE_URL %>assets/fonts/#{$f}.woff') format('woff');
     }
 }
 
