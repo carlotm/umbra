@@ -1,25 +1,6 @@
 /////////////////////////////////////////////////
 // Fonts
 
-@mixin font($f, $s, $w, $name: 'UmbraFont') {
-    @font-face {
-        font-family: $name;
-        font-style: $s;
-        font-weight: $w;
-        src: url('<%= BASE_URL %>assets/fonts/#{$f}.woff2') format('woff2'),
-        url('<%= BASE_URL %>assets/fonts/#{$f}.woff') format('woff');
-    }
-}
-
-@include font('HKGrotesk-BoldItalic',   italic, 700);
-@include font('HKGrotesk-Bold',         normal, 700);
-@include font('HKGrotesk-Italic',       italic, 500);
-@include font('HKGrotesk-Light',        normal, 400);
-@include font('HKGrotesk-MediumItalic', italic, 600);
-@include font('HKGrotesk-Medium',       normal, 600);
-@include font('HKGrotesk-Regular',      italic, 500);
-@include font('LovedbytheKing',         normal, normal, 'UmbraHeadingFont');
-
 $main-font: 'UmbraFont', sans-serif;
 $heading-font: 'UmbraHeadingFont', sans-serif;
 
