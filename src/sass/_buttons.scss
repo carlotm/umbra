@@ -33,10 +33,12 @@
 
     &--transparent {
         background-color: transparent;
+        padding: 0;
 
         &:hover {
-            background-color: $white;
+            background-color: transparent;
             color: $mare;
+            text-decoration: underline;
         }
     }
 

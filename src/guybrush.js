@@ -3,7 +3,6 @@ const skin = '#dd8275';
 const mouth = '#b45844';
 const hair = '#8c4c24';
 
-// eslint-disable-next-line no-unused-vars
 export default {
     settings: {
         shape: 'square',

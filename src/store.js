@@ -90,6 +90,44 @@ export default new Vuex.Store({
             state.current = guybrush.list[0];
             state.seq = guybrush.list[guybrush.list.length - 1].pk + 1;
         },
+        LOAD(state, files) {
+            for (let i = 0; i<files.length; i++) {
+                let f = files[i];
+                // Only process json files.
+                if (!f.type.match('.+.json')) {
+                    continue;
+                }
+
+                let reader = new FileReader();
+                reader.onload = (function() {
+                    return e => {
+                        try {
+                            const umbra = JSON.parse(e.target.result);
+                            state.settings = umbra.settings;
+                            state.shadows = umbra.list;
+                            state.current = umbra.list[0];
+                            state.seq = umbra.list[umbra.list.length - 1].pk + 1;
+                        } catch(e) {
+                            alert(e);
+                        }
+                    };
+                })(f);
+                reader.readAsText(f);
+            }
+        },
+        SAVE(state) {
+            const f = {
+                settings: state.settings,
+                list: state.shadows,
+            };
+            const umbra = JSON.stringify(f);
+            const encoding = 'data:text/json;charset=utf-8,';
+            const data = encoding + encodeURIComponent(umbra);
+            const a = document.createElement('a');
+            a.setAttribute('href', data);
+            a.setAttribute('download', 'umbra.json');
+            a.click();
+        },
     },
     actions: {
         addShadow(context) {
@@ -127,6 +165,12 @@ export default new Vuex.Store({
         },
         loadExample(context) {
             context.commit('LOADEXAMPLE');
+        },
+        load(context, payload) {
+            context.commit('LOAD', payload);
+        },
+        save(context) {
+            context.commit('SAVE');
         },
     }
 })
