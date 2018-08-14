@@ -10,10 +10,10 @@ import Shadows from './components/Shadows.vue'
 import Workspace from './components/Workspace.vue'
 
 export default {
-  name: 'app',
-  components: {
-    Shadows,
-    Workspace,
-  }
+    name: 'app',
+    components: {
+        Shadows,
+        Workspace,
+    }
 }
 </script>
