@@ -172,5 +172,8 @@ export default new Vuex.Store({
         save(context) {
             context.commit('SAVE');
         },
+        export(context) {
+            alert(context.getters.cssString);
+        },
     }
 })

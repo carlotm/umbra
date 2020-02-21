@@ -19,6 +19,9 @@
     <button class="btn btn--transparent" @click="save">
         Save
     </button>
+    <button class="btn btn--transparent" @click="exportCSS">
+        CSS Code
+    </button>
     <button class="btn btn--transparent" @click="loadExample">
         Guybrush!
     </button>
@@ -61,6 +64,9 @@ export default {
         },
         save() {
             this.$store.dispatch('save');
+        },
+        exportCSS() {
+            this.$store.dispatch('export');
         },
     }
 }
