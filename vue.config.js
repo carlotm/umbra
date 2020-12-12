@@ -1,7 +1,5 @@
 module.exports = {
-    publicPath: process.env.NODE_ENV === 'production'
-        ? '/umbra/'
-        : '/',
+    publicPath: '/',
     productionSourceMap: false,
     configureWebpack: {
         entry: ['./src/main.js', './src/sass/main.scss'],
