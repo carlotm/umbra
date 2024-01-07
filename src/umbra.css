@@ -1,4 +1,234 @@
+:root
+{
+  --s1: 0.5rem;
+  --s2: 1rem;
+  --s3: 1.6rem;
+  --s4: 2rem;
+  --s5: 4rem;
+
+  --border-size: 2px;
+
+  --font-sans: droid sans, -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
+  --font-serif: Iowan Old Style, Apple Garamond, Baskerville, Times New Roman, Droid Serif, Times, Source Serif Pro, serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+  --font-mono: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
+}
+
+@media (prefers-color-scheme: dark)
+{
+  :root
+  {
+    --bg: #000;
+    --fg: #fff;
+    --dim: #666;
+    --accent: yellow;
+  }
+}
+
+@media (prefers-color-scheme: light)
+{
+  :root
+  {
+    --bg: #fff;
+    --fg: #000;
+    --dim: #ccc;
+    --accent: blue;
+  }
+}
+
 *
 {
-    color: red;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    line-height: 1;
+    vertical-align: baseline;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html { height: 100%; }
+body
+{
+    background-color: var(--bg);
+    height: 100%;
+    color: var(--fg);
+    line-height: 1;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+}
+label,
+select,
+button,
+input
+{
+    cursor: pointer;
+}
+
+
+/* ====================
+ * App root
+ * ==================== */
+
+.App
+{
+    height: 100%;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+/* ====================
+ * Sections
+ * ==================== */
+
+.Section
+{
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.Section-header
+{
+    padding: var(--s2);
+}
+
+.Section-header > h2
+{
+    font-weight: bold;
+}
+
+.Section-header > p
+{
+    opacity: 0.8;
+    margin-top: var(--s1);
+    font-size: 0.8rem;
+}
+
+.Section-content
+{
+    overflow-y: scroll;
+}
+
+/* ====================
+ * Forms
+ * ==================== */
+
+.FormField
+{
+    padding: var(--s1) var(--s2);
+}
+
+.FormField-label
+{
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.FormField-element
+{
+    margin-top: var(--s1);
+    width: 100%;
+}
+
+.FormField-size
+{
+    display: flex;
+    gap: var(--s2);
+}
+
+.FormField-shape
+{
+    display: flex;
+    gap: var(--s2);
+}
+
+/* ====================
+ * Tools
+ * ==================== */
+
+.Tools
+{
+    border-bottom: var(--border-size) solid var(--dim);
+}
+
+/* ====================
+ * Output
+ * ==================== */
+
+.Output
+{
+    grid-row: span 2;
+    border-left: var(--border-size) solid var(--dim);
+}
+
+.Output-content
+{
+    flex: 1;
+    position: relative;
+}
+
+.Output-canvas
+{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.Output-rootdiv
+{
+    background-color: black;
+    width: 50px;
+    height: 50px;
+}
+
+.Output-rootdiv.is-round
+{
+    border-radius: 100%;
+}
+
+/* ====================
+ * Shadows
+ * ==================== */
+
+.ShadowItem
+{
+    padding: var(--s1) var(--s2);
+}
+
+.ShadowItem-label
+{
+    padding-left: var(--s1);
+}
+
+.ShadowSettings
+{
+    position: absolute;
+    z-index: 9;
+    left: var(--s2);
+    min-width: 300px;
+    bottom: var(--s2);
+    background-color: var(--dim);
+}
+
+.ShadowSettings-header
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: var(--s2);
+}
+
+.ShadowSettings-close
+{
+    background-color: transparent;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: var(--s2);
 }
