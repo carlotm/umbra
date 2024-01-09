@@ -3,7 +3,7 @@ module Umbra exposing (main)
 import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onInput, onClick)
+import Html.Events exposing (onClick, onInput)
 
 
 type alias Title =
@@ -151,6 +151,9 @@ shadowSettings maybeShadow =
                     , button [ class "ShadowSettings-close", onClick ShadowSettingsClose ] [ text "-" ]
                     ]
                 , formField "Horizontal offset" (\fieldId -> xOffsetInput fieldId s)
+                , formField "Vertical offset" (\fieldId -> yOffsetInput fieldId s)
+                , formField "Blur" (\fieldId -> blurInput fieldId s)
+                , formField "Spread" (\fieldId -> spreadInput fieldId s)
                 ]
 
         Nothing ->
@@ -228,9 +231,25 @@ colorInput : String -> String -> Html Msg
 colorInput fieldId color =
     input [ id fieldId, onInput SetColor, type_ "color", value color ] []
 
+
 xOffsetInput : String -> Shadow -> Html Msg
 xOffsetInput fieldId shadow =
     input [ id fieldId, type_ "number", value shadow.xOffset ] []
+
+
+yOffsetInput : String -> Shadow -> Html Msg
+yOffsetInput fieldId shadow =
+    input [ id fieldId, type_ "number", value shadow.yOffset ] []
+
+
+blurInput : String -> Shadow -> Html Msg
+blurInput fieldId shadow =
+    input [ id fieldId, type_ "number", value shadow.blur ] []
+
+
+spreadInput : String -> Shadow -> Html Msg
+spreadInput fieldId shadow =
+    input [ id fieldId, type_ "number", value shadow.spread ] []
 
 
 shadowItem : Shadow -> String -> Html Msg
