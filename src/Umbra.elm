@@ -28,6 +28,7 @@ type alias Model =
     , color : String
     , shadows : List Shadow
     , selectedShadowId : String
+    , css : Maybe String
     }
 
 
@@ -44,6 +45,9 @@ type Msg
     | SetShadowColor String
     | DeleteSelectedShadow
     | AddShadow
+    | ExportCSS
+    | Guybrush
+    | CloseExportModal
 
 
 type ShadowParam
@@ -111,6 +115,21 @@ update msg model =
                 , selectedShadowId = ""
             }
 
+        ExportCSS ->
+            { model
+                | css = Just (buildBoxShadow model.shadows)
+                , selectedShadowId = ""
+            }
+
+        Guybrush ->
+            model
+
+        CloseExportModal ->
+            { model
+                | css = Nothing
+                , selectedShadowId = ""
+            }
+
 
 
 ----------------------------------------------
@@ -121,9 +140,15 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div [ class "App" ]
-        [ viewSection Tools (viewTools model) Nothing
+        [ viewSection Tools (viewTools model) (Just viewToolsFooter)
         , viewSection Output (viewOutput model) Nothing
         , viewSection Shadows (viewShadows model) (Just viewShadowsFooter)
+        , case model.css of
+            Nothing ->
+                text ""
+
+            Just css ->
+                viewModalExport css
         ]
 
 
@@ -180,12 +205,32 @@ viewSection sectionType children footer =
         ]
 
 
+viewModalExport : String -> Html Msg
+viewModalExport css =
+    div [ class "Modal" ]
+        [ div [ class "Modal-header" ]
+            [ h3 [] [ text "Export CSS" ]
+            , button [ type_ "button", class "Modal-close", onClick CloseExportModal ] [ text "-" ]
+            ]
+        , div [ class "Modal-content" ]
+            [ p [] [ text css ] ]
+        ]
+
+
 viewTools : Model -> List (Html Msg)
 viewTools model =
     [ viewFormField "Shape" model.shape viewInputShape
     , viewFormField "Size" model.size viewInputSize
     , viewFormField "Color" model.color viewInputColor
     ]
+
+
+viewToolsFooter : Html Msg
+viewToolsFooter =
+    div []
+        [ button [ type_ "button", onClick ExportCSS ] [ text "Export as CSS" ]
+        , button [ type_ "button", onClick Guybrush ] [ text "Guybrush!" ]
+        ]
 
 
 viewShadows : Model -> List (Html Msg)
@@ -386,12 +431,7 @@ makeShadow model =
 
 randomColor : String
 randomColor =
-    "#" ++ randomColorHex ++ randomColorHex ++ randomColorHex
-
-
-randomColorHex : String
-randomColorHex =
-    "45"
+    "#000000"
 
 
 maxOrZero : List Int -> Int
@@ -423,4 +463,4 @@ initialShadows =
 
 initialModel : Model
 initialModel =
-    Model "sqr" "50" "#000000" initialShadows ""
+    Model "sqr" "50" "#000000" initialShadows "" Nothing

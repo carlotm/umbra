@@ -223,7 +223,8 @@ input
     background-color: var(--dim);
 }
 
-.ShadowSettings-header
+.ShadowSettings-header,
+.Modal-header
 {
     display: flex;
     justify-content: space-between;
@@ -231,10 +232,24 @@ input
     padding-left: var(--s2);
 }
 
-.ShadowSettings-close
+.ShadowSettings-close,
+.Modal-close
 {
     background-color: transparent;
     font-size: 1.5rem;
     font-weight: bold;
     padding: var(--s2);
+}
+
+/* ====================
+ * Modal
+ * ==================== */
+
+.Modal
+{
+    position: fixed;
+    background-color: yellow;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
