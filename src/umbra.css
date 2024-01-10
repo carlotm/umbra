@@ -111,6 +111,12 @@ input
 .Section-content
 {
     overflow-y: scroll;
+    flex: 1;
+}
+
+.Section-footer
+{
+    padding: var(--s2);
 }
 
 /* ====================

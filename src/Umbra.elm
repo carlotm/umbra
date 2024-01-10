@@ -43,6 +43,7 @@ type Msg
     | SetSpread String
     | SetShadowColor String
     | DeleteSelectedShadow
+    | AddShadow
 
 
 type ShadowParam
@@ -104,6 +105,12 @@ update msg model =
                 , shadows = List.filter (\s -> s.id /= model.selectedShadowId) model.shadows
             }
 
+        AddShadow ->
+            { model
+                | shadows = makeShadow model :: model.shadows
+                , selectedShadowId = ""
+            }
+
 
 
 ----------------------------------------------
@@ -114,9 +121,9 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div [ class "App" ]
-        [ viewSection Tools (viewTools model)
-        , viewSection Output (viewOutput model)
-        , viewSection Shadows (viewShadows model)
+        [ viewSection Tools (viewTools model) Nothing
+        , viewSection Output (viewOutput model) Nothing
+        , viewSection Shadows (viewShadows model) (Just viewShadowsFooter)
         ]
 
 
@@ -141,8 +148,8 @@ main =
 ----------------------------------------------
 
 
-viewSection : Section -> List (Html Msg) -> Html Msg
-viewSection sectionType children =
+viewSection : Section -> List (Html Msg) -> Maybe (Html Msg) -> Html Msg
+viewSection sectionType children footer =
     let
         ( className, title, subtitle ) =
             case sectionType of
@@ -154,6 +161,14 @@ viewSection sectionType children =
 
                 Output ->
                     ( "Output", "Result", "See the result real time below." )
+
+        sectionFooter =
+            case footer of
+                Just f ->
+                    div [ class "Section-footer" ] [ f ]
+
+                Nothing ->
+                    text ""
     in
     section [ class ("Section " ++ className) ]
         [ header [ class "Section-header" ]
@@ -161,6 +176,7 @@ viewSection sectionType children =
             , p [] [ text subtitle ]
             ]
         , div [ class "Section-content" ] children
+        , sectionFooter
         ]
 
 
@@ -175,6 +191,13 @@ viewTools model =
 viewShadows : Model -> List (Html Msg)
 viewShadows model =
     List.map (\s -> viewShadowItem s model.selectedShadowId) model.shadows
+
+
+viewShadowsFooter : Html Msg
+viewShadowsFooter =
+    div []
+        [ button [ type_ "button", onClick AddShadow ] [ text "Add a shadow" ]
+        ]
 
 
 viewShadowItem : Shadow -> String -> Html Msg
@@ -347,6 +370,48 @@ updateShadow s param value =
 
         Color ->
             { s | color = value }
+
+
+makeShadow : Model -> Shadow
+makeShadow model =
+    let
+        ids =
+            List.map shadowId model.shadows
+
+        maxId =
+            maxOrZero ids
+    in
+    Shadow (String.fromInt maxId) "0" "0" "0" "0" randomColor
+
+
+randomColor : String
+randomColor =
+    "#" ++ randomColorHex ++ randomColorHex ++ randomColorHex
+
+
+randomColorHex : String
+randomColorHex =
+    "45"
+
+
+maxOrZero : List Int -> Int
+maxOrZero l =
+    case List.maximum l of
+        Just m ->
+            m + 1
+
+        Nothing ->
+            0
+
+
+shadowId : Shadow -> Int
+shadowId s =
+    case String.toInt s.id of
+        Just i ->
+            i
+
+        Nothing ->
+            -1
 
 
 initialShadows : List Shadow
