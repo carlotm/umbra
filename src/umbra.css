@@ -165,7 +165,7 @@ input
     border-left: var(--border-size) solid var(--dim);
 }
 
-.Output-content
+.Output > .Section-content
 {
     flex: 1;
     position: relative;
