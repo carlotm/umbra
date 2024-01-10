@@ -213,7 +213,7 @@ viewModalExport css =
             , button [ type_ "button", class "Modal-close", onClick CloseExportModal ] [ text "-" ]
             ]
         , div [ class "Modal-content" ]
-            [ p [] [ text css ] ]
+            [ p [] [ text ("box-shadow: " ++ css) ] ]
         ]
 
 
