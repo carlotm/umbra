@@ -4,6 +4,7 @@ import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
+import FeatherIcons
 
 
 
@@ -122,7 +123,7 @@ update msg model =
             }
 
         Guybrush ->
-            model
+            guybrush
 
         CloseExportModal ->
             { model
@@ -179,7 +180,7 @@ viewSection sectionType children footer =
         ( className, title, subtitle ) =
             case sectionType of
                 Tools ->
-                    ( "Tools", "Base settings", "The base element settings, affect all the shadows." )
+                    ( "Tools", "Base settings", "The base element settings." )
 
                 Shadows ->
                     ( "Shadows", "Shadows list", "The list of all currently visible shadows." )
@@ -227,7 +228,7 @@ viewTools model =
 
 viewToolsFooter : Html Msg
 viewToolsFooter =
-    div []
+    div [ class "space-x-1" ]
         [ button [ type_ "button", onClick ExportCSS ] [ text "Export as CSS" ]
         , button [ type_ "button", onClick Guybrush ] [ text "Guybrush!" ]
         ]
@@ -253,7 +254,10 @@ viewShadowItem shadow selectedShadowId =
     in
     div [ class "ShadowItem" ]
         [ input [ id domId, type_ "checkbox", onInput SelectShadow, value shadow.id, checked (shadow.id == selectedShadowId) ] []
-        , label [ for domId ] [ text ("Shadow #" ++ shadow.id) ]
+        , label [ for domId ]
+            [ text ("Shadow #" ++ shadow.id)
+            , FeatherIcons.chevronsRight |> FeatherIcons.toHtml []
+            ]
         ]
 
 
@@ -426,12 +430,7 @@ makeShadow model =
         maxId =
             maxOrZero ids
     in
-    Shadow (String.fromInt maxId) "0" "0" "0" "0" randomColor
-
-
-randomColor : String
-randomColor =
-    "#000000"
+    Shadow (String.fromInt maxId) "0" "0" "0" "0" "#000000"
 
 
 maxOrZero : List Int -> Int
@@ -454,13 +453,86 @@ shadowId s =
             -1
 
 
-initialShadows : List Shadow
-initialShadows =
-    [ Shadow "1" "5" "5" "0" "0" "#ff0000"
-    , Shadow "2" "10" "10" "0" "0" "#00ff00"
-    ]
-
-
 initialModel : Model
 initialModel =
-    Model "sqr" "50" "#000000" initialShadows "" Nothing
+    Model "sqr"
+        "50"
+        "#000000"
+        [ Shadow "2" "5" "5" "0" "0" "#ff0000"
+        , Shadow "1" "10" "10" "0" "0" "#00ff00"
+        ]
+        ""
+        Nothing
+
+
+guybrush : Model
+guybrush =
+    let
+        skin =
+            "#dd8275"
+
+        mouth =
+            "#b45844"
+
+        hair =
+            "#8c4c24"
+    in
+    Model "sqr"
+        "20"
+        "#000000"
+        [ Shadow "1" "20" "0" "0" "0" skin
+        , Shadow "2" "-20" "0" "0" "0" skin
+        , Shadow "3" "-60" "0" "0" "0" skin
+        , Shadow "4" "-20" "-20" "0" "0" skin
+        , Shadow "5" "0" "-20" "0" "0" skin
+        , Shadow "6" "20" "-20" "0" "0" skin
+        , Shadow "7" "0" "-40" "0" "0" skin
+        , Shadow "8" "-80" "20" "0" "0" skin
+        , Shadow "9" "-60" "20" "0" "0" skin
+        , Shadow "10" "-40" "20" "0" "0" skin
+        , Shadow "11" "-20" "20" "0" "0" skin
+        , Shadow "12" "0" "20" "0" "0" skin
+        , Shadow "13" "20" "20" "0" "0" skin
+        , Shadow "14" "40" "20" "0" "0" skin
+        , Shadow "15" "-80" "40" "0" "0" skin
+        , Shadow "16" "-60" "40" "0" "0" skin
+        , Shadow "17" "-40" "40" "0" "0" skin
+        , Shadow "18" "-20" "40" "0" "0" skin
+        , Shadow "19" "0" "40" "0" "0" skin
+        , Shadow "20" "20" "40" "0" "0" skin
+        , Shadow "21" "-60" "60" "0" "0" skin
+        , Shadow "22" "-40" "60" "0" "0" skin
+        , Shadow "23" "-20" "60" "0" "0" skin
+        , Shadow "24" "0" "60" "0" "0" mouth
+        , Shadow "25" "20" "60" "0" "0" mouth
+        , Shadow "26" "-80" "80" "0" "0" skin
+        , Shadow "27" "-60" "80" "0" "0" skin
+        , Shadow "28" "-40" "80" "0" "0" skin
+        , Shadow "29" "-20" "80" "0" "0" skin
+        , Shadow "30" "0" "80" "0" "0" skin
+        , Shadow "31" "20" "80" "0" "0" skin
+        , Shadow "32" "-80" "100" "0" "0" skin
+        , Shadow "33" "-60" "100" "0" "0" skin
+        , Shadow "34" "-40" "-80" "0" "20" hair
+        , Shadow "35" "-100" "-40" "0" "20" hair
+        , Shadow "36" "-80" "-60" "0" "20" hair
+        , Shadow "37" "-60" "-40" "0" "20" hair
+        , Shadow "38" "0" "-80" "0" "20" hair
+        , Shadow "40" "20" "-60" "0" "20" hair
+        , Shadow "41" "60" "-60" "0" "0" hair
+        , Shadow "42" "60" "-40" "0" "0" hair
+        , Shadow "43" "-40" "0" "0" "0" hair
+        , Shadow "44" "-20" "-40" "0" "0" hair
+        , Shadow "45" "40" "40" "0" "0" hair
+        , Shadow "46" "-80" "20" "0" "20" hair
+        , Shadow "47" "-140" "40" "0" "0" hair
+        , Shadow "48" "-120" "40" "0" "0" hair
+        , Shadow "49" "-140" "60" "0" "0" hair
+        , Shadow "50" "-120" "60" "0" "0" hair
+        , Shadow "51" "-80" "60" "0" "0" hair
+        , Shadow "52" "-100" "60" "0" "0" hair
+        , Shadow "53" "-40" "100" "0" "0" hair
+        , Shadow "54" "-20" "100" "0" "0" hair
+        ]
+        ""
+        Nothing
