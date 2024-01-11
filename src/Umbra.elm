@@ -1,10 +1,10 @@
 module Umbra exposing (main)
 
 import Browser
+import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
-import FeatherIcons
 
 
 
@@ -220,9 +220,18 @@ viewModalExport css =
 
 viewTools : Model -> List (Html Msg)
 viewTools model =
-    [ viewFormField "Shape" model.shape viewInputShape
-    , viewFormField "Size" model.size viewInputSize
-    , viewFormField "Color" model.color viewInputColor
+    [ div [ class "FormField is-shape" ]
+        [ p [ class "FormField-title" ] [ text "Shape" ]
+        , div [ class "FormField-element" ] (viewInputShape model.shape)
+        ]
+    , div [ class "FormField is-size" ]
+        [ p [ class "FormField-title" ] [ text "Size" ]
+        , div [ class "FormField-element" ] (viewInputSize model.size)
+        ]
+    , div [ class "FormField is-color" ]
+        [ p [ class "FormField-title" ] [ text "Color" ]
+        , div [ class "FormField-element" ] (viewInputColor model.size)
+        ]
     ]
 
 
@@ -282,18 +291,29 @@ viewOutput model =
     ]
 
 
-viewInputShape : String -> String -> Html Msg
-viewInputShape _ value_ =
-    div [ class "FormField-size" ]
-        [ label []
-            [ input [ type_ "radio", name "shapes", value "sqr", onInput SetShape, checked (value_ == "sqr") ] []
-            , text "Square"
-            ]
-        , label []
-            [ input [ type_ "radio", name "shapes", value "rnd", onInput SetShape, checked (value_ == "rnd") ] []
-            , text "Round"
-            ]
+viewInputShape : String -> List (Html Msg)
+viewInputShape value_ =
+    [ input [ id "shape-sqr"
+            , type_ "radio"
+            , name "shapes"
+            , value "sqr"
+            , onInput SetShape
+            , checked (value_ == "sqr") ] []
+    , label [ for "shape-sqr"]
+        [ text "Square"
+        , FeatherIcons.square |> FeatherIcons.toHtml []
         ]
+    , input [ id "shape-rnd"
+            , type_ "radio"
+            , name "shapes"
+            , value "rnd"
+            , onInput SetShape
+            , checked (value_ == "rnd") ] []
+    , label [ for "shape-rnd" ]
+        [ text "Round"
+        , FeatherIcons.circle |> FeatherIcons.toHtml []
+        ]
+    ]
 
 
 viewInputXOffset : String -> String -> Html Msg
@@ -306,17 +326,16 @@ viewInputYOffset id_ value_ =
     input [ id id_, onInput SetYOffset, type_ "number", value value_ ] []
 
 
-viewInputSize : String -> String -> Html Msg
-viewInputSize id_ value_ =
-    div [ class "FormField-size" ]
-        [ input [ id id_, onInput SetSize, type_ "range", Html.Attributes.min "1", Html.Attributes.max "100" ] []
-        , p [] [ text (value_ ++ "px") ]
-        ]
+viewInputSize : String -> List (Html Msg)
+viewInputSize value_ =
+    [ input [ onInput SetSize, type_ "range", Html.Attributes.min "1", Html.Attributes.max "100" ] []
+    , p [] [ text (value_ ++ "px") ]
+    ]
 
 
-viewInputColor : String -> String -> Html Msg
-viewInputColor id_ value_ =
-    input [ id id_, onInput SetColor, type_ "color", value value_ ] []
+viewInputColor : String -> List (Html Msg)
+viewInputColor value_ =
+    [ input [ onInput SetColor, type_ "color", value value_ ] [] ]
 
 
 viewInputBlur : String -> String -> Html Msg
