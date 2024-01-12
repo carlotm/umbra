@@ -2,7 +2,7 @@ public_dir = $(abspath ./public)
 
 .PHONY: all clean
 
-all: $(public_dir)/index.html $(public_dir)/app.js $(public_dir)/app.css
+all: $(public_dir)/index.html $(public_dir)/app.js $(public_dir)/app.css $(public_dir)/favicon.ico
 
 clean:
 	rm -rf $(public_dir)
@@ -17,3 +17,6 @@ $(public_dir)/app.js: src/Umbra.elm
 
 $(public_dir)/app.css: src/umbra.css
 	minify $< > $@
+
+$(public_dir)/favicon.ico: src/favicon.ico
+	cp $< $@
