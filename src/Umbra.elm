@@ -213,13 +213,16 @@ viewSection sectionType children footer =
 
 viewModalExport : String -> Html Msg
 viewModalExport css =
-    div [ class "Modal" ]
-        [ div [ class "Modal-header" ]
-            [ h3 [] [ text "Export CSS" ]
-            , button [ type_ "button", class "Modal-close", onClick CloseExportModal ] [ text "-" ]
+    div [ class "Modal is-fullscreen" ]
+        [ div [ class "Modal-window" ]
+            [ div [ class "Modal-header" ]
+                [ h3 [ class "Modal-title" ] [ text "Export CSS" ]
+                , button [ type_ "button", class "Modal-close", onClick CloseExportModal ]
+                    [ FeatherIcons.x |> FeatherIcons.toHtml [] ]
+                ]
+            , div [ class "Modal-content" ]
+                [ code [] [ text ("box-shadow: " ++ css) ] ]
             ]
-        , div [ class "Modal-content" ]
-            [ p [] [ text ("box-shadow: " ++ css) ] ]
         ]
 
 
@@ -337,16 +340,6 @@ viewInputShape value_ =
         shapes
 
 
-viewInputXOffset : String -> String -> Html Msg
-viewInputXOffset fieldId value_ =
-    input [ id fieldId, onInput SetXOffset, type_ "number", value value_ ] []
-
-
-viewInputYOffset : String -> String -> Html Msg
-viewInputYOffset id_ value_ =
-    input [ id id_, onInput SetYOffset, type_ "number", value value_ ] []
-
-
 viewInputSize : String -> List (Html Msg)
 viewInputSize value_ =
     [ input [ onInput SetSize, type_ "range", Html.Attributes.min "1", Html.Attributes.max "100" ] []
@@ -362,51 +355,45 @@ viewInputColor value_ =
     ]
 
 
-viewInputBlur : String -> String -> Html Msg
-viewInputBlur id_ value_ =
-    input [ id id_, onInput SetBlur, type_ "number", value value_ ] []
-
-
-viewInputSpread : String -> String -> Html Msg
-viewInputSpread id_ value_ =
-    input [ id id_, onInput SetSpread, type_ "number", value value_ ] []
-
-
-viewInputShadowColor : String -> String -> Html Msg
-viewInputShadowColor id_ value_ =
-    input [ id id_, onInput SetShadowColor, type_ "color", value value_ ] []
-
-
-viewFormField : String -> String -> (String -> String -> Html Msg) -> Html Msg
-viewFormField label_ value_ input_ =
-    let
-        lowerId =
-            String.toLower label_
-
-        id_ =
-            "id_" ++ String.replace " " "_" lowerId
-    in
-    div [ class "FormField" ]
-        [ label [ class "FormField-label", for id_ ] [ text label_ ]
-        , div [ class "FormField-element" ] [ input_ id_ value_ ]
-        ]
-
-
 viewShadowSettings : Maybe Shadow -> Html Msg
 viewShadowSettings maybeShadow =
     case maybeShadow of
         Just s ->
-            div [ class "ShadowSettings" ]
-                [ div [ class "ShadowSettings-header" ]
-                    [ h3 [] [ text ("Shadow #" ++ s.id ++ " settings") ]
-                    , button [ class "ShadowSettings-close", onClick ShadowSettingsClose ] [ text "-" ]
+            div [ class "Modal is-shadow" ]
+                [ div [ class "Modal-window" ]
+                    [ div [ class "Modal-header" ]
+                        [ h3 [ class "Modal-title" ] [ text ("Shadow #" ++ s.id ++ " settings") ]
+                        , button [ type_ "button", class "Modal-close", onClick ShadowSettingsClose ]
+                            [ FeatherIcons.x |> FeatherIcons.toHtml [] ]
+                        ]
+                    , div [ class "Modal-content" ]
+                        [ label [ class "FormFieldCompact" ]
+                            [ text "Horizontal offset"
+                            , input [type_ "number", value s.xOffset, onInput SetXOffset ] []
+                            ]
+                        , label [ class "FormFieldCompact" ]
+                            [ text "Vertical offset"
+                            , input [type_ "number", value s.yOffset, onInput SetYOffset ] []
+                            ]
+                        , label [ class "FormFieldCompact" ]
+                            [ text "Blur"
+                            , input [type_ "number", value s.blur, onInput SetBlur ] []
+                            ]
+                        , label [ class "FormFieldCompact" ]
+                            [ text "Spread"
+                            , input [type_ "number", value s.spread, onInput SetSpread ] []
+                            ]
+                        , label [ class "FormFieldCompact is-color" ]
+                            [ text "Color"
+                            , div [ style "background-color" s.color ] [ ]
+                            , input [ onInput SetShadowColor, type_ "color", value s.color ] []
+                            ]
+                        , button [ class "Button is-danger is-center has-icon", onClick DeleteSelectedShadow ]
+                            [ text "Delete"
+                            , FeatherIcons.trash |> FeatherIcons.withSize 14 |> FeatherIcons.toHtml []
+                            ]
+                        ]
                     ]
-                , viewFormField "Horizontal offset" s.xOffset viewInputXOffset
-                , viewFormField "Vertical offset" s.yOffset viewInputYOffset
-                , viewFormField "Blur" s.blur viewInputBlur
-                , viewFormField "Spread" s.spread viewInputSpread
-                , viewFormField "Color" s.color viewInputShadowColor
-                , button [ onClick DeleteSelectedShadow ] [ text "Delete" ]
                 ]
 
         Nothing ->
