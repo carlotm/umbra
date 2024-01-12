@@ -487,9 +487,9 @@ initialModel : Model
 initialModel =
     Model "sqr"
         "50"
-        "#000000"
-        [ Shadow "2" "5" "5" "0" "0" "#ff0000"
-        , Shadow "1" "10" "10" "0" "0" "#00ff00"
+        "#ff0000"
+        [ Shadow "2" "5" "5" "0" "0" "#00ff00"
+        , Shadow "1" "10" "10" "0" "0" "#0000ff"
         ]
         ""
         Nothing

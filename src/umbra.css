@@ -17,11 +17,11 @@
 {
   :root
   {
-    --bg: #000;
-    --bg-d: #222;
-    --bg-dd: #222;
-    --fg: #fff;
-    --overlay: rgba(255, 255, 255, 0.8);
+    --bg: #444;
+    --bg-d: #333;
+    --bg-dd: #000;
+    --fg: #ccc;
+    --overlay: rgba(0, 0, 0, 0.8);
     --accent: yellow;
     --accent-d: yellow;
   }
