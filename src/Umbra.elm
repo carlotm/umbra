@@ -33,6 +33,11 @@ type alias Model =
     }
 
 
+type ButtonLevel
+    = Primary
+    | Secondary
+
+
 type Msg
     = SetShape String
     | SetSize String
@@ -230,17 +235,31 @@ viewTools model =
         ]
     , div [ class "FormField is-color" ]
         [ p [ class "FormField-title" ] [ text "Color" ]
-        , div [ class "FormField-element" ] (viewInputColor model.size)
+        , div [ class "FormField-element" ] (viewInputColor model.color)
         ]
     ]
 
 
 viewToolsFooter : Html Msg
 viewToolsFooter =
-    div [ class "space-x-1" ]
-        [ button [ type_ "button", onClick ExportCSS ] [ text "Export as CSS" ]
-        , button [ type_ "button", onClick Guybrush ] [ text "Guybrush!" ]
+    div [ class "Buttons" ]
+        [ btn "Export CSS" ExportCSS Primary
+        , btn "Guybrush!" Guybrush Secondary
         ]
+
+
+btn : String -> Msg -> ButtonLevel -> Html Msg
+btn t e l =
+    let
+        levelClass =
+            case l of
+                Primary ->
+                    "primary"
+
+                Secondary ->
+                    "secondary"
+    in
+    button [ type_ "button", class ("Button is-" ++ levelClass), onClick e ] [ text t ]
 
 
 viewShadows : Model -> List (Html Msg)
@@ -250,9 +269,7 @@ viewShadows model =
 
 viewShadowsFooter : Html Msg
 viewShadowsFooter =
-    div []
-        [ button [ type_ "button", onClick AddShadow ] [ text "Add a shadow" ]
-        ]
+    div [] [ btn "Add a shadow" AddShadow Primary ]
 
 
 viewShadowItem : Shadow -> String -> Html Msg
@@ -293,27 +310,31 @@ viewOutput model =
 
 viewInputShape : String -> List (Html Msg)
 viewInputShape value_ =
-    [ input [ id "shape-sqr"
-            , type_ "radio"
-            , name "shapes"
-            , value "sqr"
-            , onInput SetShape
-            , checked (value_ == "sqr") ] []
-    , label [ for "shape-sqr"]
-        [ text "Square"
-        , FeatherIcons.square |> FeatherIcons.toHtml []
-        ]
-    , input [ id "shape-rnd"
-            , type_ "radio"
-            , name "shapes"
-            , value "rnd"
-            , onInput SetShape
-            , checked (value_ == "rnd") ] []
-    , label [ for "shape-rnd" ]
-        [ text "Round"
-        , FeatherIcons.circle |> FeatherIcons.toHtml []
-        ]
-    ]
+    let
+        shapes =
+            [ ( "sqr", "Square", FeatherIcons.square )
+            , ( "rnd", "Circle", FeatherIcons.circle )
+            ]
+    in
+    List.map
+        (\( v, l, i ) ->
+            div []
+                [ input
+                    [ id ("shape-" ++ v)
+                    , type_ "radio"
+                    , name "shapes"
+                    , value v
+                    , onInput SetShape
+                    , checked (value_ == v)
+                    ]
+                    []
+                , label [ for ("shape-" ++ v) ]
+                    [ text l
+                    , i |> FeatherIcons.withSize 14 |> FeatherIcons.toHtml []
+                    ]
+                ]
+        )
+        shapes
 
 
 viewInputXOffset : String -> String -> Html Msg
@@ -335,7 +356,10 @@ viewInputSize value_ =
 
 viewInputColor : String -> List (Html Msg)
 viewInputColor value_ =
-    [ input [ onInput SetColor, type_ "color", value value_ ] [] ]
+    [ label [ style "background-color" value_ ]
+        [ input [ onInput SetColor, type_ "color", value value_ ] []
+        ]
+    ]
 
 
 viewInputBlur : String -> String -> Html Msg

@@ -19,7 +19,7 @@
   {
     --bg: #000;
     --bg-d: #222;
-    --bg-dd: #000;
+    --bg-dd: #222;
     --fg: #fff;
     --accent: yellow;
     --accent-d: yellow;
@@ -32,11 +32,17 @@
   {
     --bg: #fff;
     --bg-d: #ddd;
-    --bg-dd: #aaa;
+    --bg-dd: #bbb;
     --fg: #000;
     --accent: blue;
     --accent-d: #0000aa;
   }
+}
+
+:root
+{
+    --bg-primary: linear-gradient(to top, var(--accent-d), var(--accent));
+    --bg-secondary: linear-gradient(to top, var(--bg-dd), var(--bg-d));
 }
 
 *
@@ -128,16 +134,6 @@ input
     padding: var(--s2);
 }
 
-.Section-footer button[type=button]
-{
-    background: linear-gradient(to top, var(--accent-d), var(--accent));
-    font-size: 0.8rem;
-    color: var(--bg);
-    padding: var(--s1) var(--s2);
-    border-radius: 3px;
-    line-height: 1;
-}
-
 /* ====================
  * Forms
  * ==================== */
@@ -169,6 +165,9 @@ input
 .FormField.is-shape .FormField-element
 {
     display: flex;
+    overflow: hidden;
+    border-radius: 3px;
+    width: fit-content;
 }
 
 .FormField.is-shape [type=radio]
@@ -176,11 +175,33 @@ input
     display: none;
 }
 
+.FormField.is-shape [type=radio]:checked + label
+{
+    background: var(--bg-primary);
+    color: var(--bg);
+}
+
 .FormField.is-shape label
 {
     display: flex;
     align-items: center;
-    gap: calc(var(--s1) / 2);
+    gap: var(--s1);
+    background: var(--bg-secondary);
+    padding: var(--s1);
+}
+
+.FormField.is-color [type=color]
+{
+    display: none;
+}
+
+.FormField.is-color label
+{
+    width: 60px;
+    height: 30px;
+    position: relative;
+    display: block;
+    border-radius: 3px;
 }
 
 /* ====================
@@ -304,10 +325,47 @@ input
 }
 
 /* ====================
- * Utility
+ * Buttons
  * ==================== */
 
-.space-x-1 > * + *
+.Buttons
 {
-    margin-left: var(--s1);
+    display: flex;
+}
+
+.Buttons > .Button
+{
+    border-radius: 0;
+}
+
+.Buttons > .Button:first-child
+{
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.Buttons > .Button:last-child
+{
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.Button
+{
+    font-size: 0.8rem;
+    padding: var(--s1) var(--s2);
+    border-radius: 3px;
+    line-height: 1;
+}
+
+.Button.is-primary
+{
+    background: linear-gradient(to top, var(--accent-d), var(--accent));
+    color: var(--bg);
+}
+
+.Button.is-secondary
+{
+    background: linear-gradient(to top, var(--bg-dd), var(--bg-d));
+    color: var(--fg);
 }
