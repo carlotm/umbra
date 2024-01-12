@@ -1,4 +1,4 @@
-public_dir = $(abspath ./public)
+public_dir = $(abspath ./_site)
 
 .PHONY: all clean
 
