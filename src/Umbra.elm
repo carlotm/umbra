@@ -2,9 +2,11 @@ module Umbra exposing (main)
 
 import Browser
 import FeatherIcons
+import Hex
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
+import Random
 
 
 
@@ -30,6 +32,7 @@ type alias Model =
     , shadows : List Shadow
     , selectedShadowId : String
     , css : Maybe String
+    , someRandomColor : Color
     }
 
 
@@ -49,6 +52,7 @@ type Msg
     | ExportCSS
     | Guybrush
     | CloseExportModal
+    | GotRandomColor Color
 
 
 type ShadowParam
@@ -56,7 +60,14 @@ type ShadowParam
     | YOffset
     | Blur
     | Spread
-    | Color
+    | ShadowColor
+
+
+type alias Color =
+    { r : Int
+    , g : Int
+    , b : Int
+    }
 
 
 
@@ -65,65 +76,76 @@ type ShadowParam
 ----------------------------------------------
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         SetShape newShape ->
-            { model | shape = newShape }
+            ( { model | shape = newShape }, Cmd.none )
 
         SetSize newSize ->
-            { model | size = newSize }
+            ( { model | size = newSize }, Cmd.none )
 
         SetColor newColor ->
-            { model | color = newColor }
+            ( { model | color = newColor }, Cmd.none )
 
         SelectShadow id ->
-            { model | selectedShadowId = id }
+            ( { model | selectedShadowId = id }, Cmd.none )
 
         ShadowSettingsClose ->
-            { model | selectedShadowId = "" }
+            ( { model | selectedShadowId = "" }, Cmd.none )
 
         SetXOffset offset ->
-            updateSelectedShadow model XOffset offset
+            ( updateSelectedShadow model XOffset offset, Cmd.none )
 
         SetYOffset offset ->
-            updateSelectedShadow model YOffset offset
+            ( updateSelectedShadow model YOffset offset, Cmd.none )
 
         SetBlur blur ->
-            updateSelectedShadow model Blur blur
+            ( updateSelectedShadow model Blur blur, Cmd.none )
 
         SetSpread spread ->
-            updateSelectedShadow model Spread spread
+            ( updateSelectedShadow model Spread spread, Cmd.none )
 
         SetShadowColor color ->
-            updateSelectedShadow model Color color
+            ( updateSelectedShadow model ShadowColor color, Cmd.none )
 
         DeleteSelectedShadow ->
-            { model
+            ( { model
                 | selectedShadowId = ""
                 , shadows = List.filter (\s -> s.id /= model.selectedShadowId) model.shadows
-            }
+              }
+            , Cmd.none
+            )
 
         AddShadow ->
-            { model
+            ( { model
                 | shadows = makeShadow model :: model.shadows
                 , selectedShadowId = ""
-            }
+              }
+            , Random.generate GotRandomColor randomColor
+            )
 
         ExportCSS ->
-            { model
+            ( { model
                 | css = Just (buildBoxShadow model.shadows)
                 , selectedShadowId = ""
-            }
+              }
+            , Cmd.none
+            )
 
         Guybrush ->
-            guybrush
+            ( guybrush, Cmd.none )
 
         CloseExportModal ->
-            { model
+            ( { model
                 | css = Nothing
                 , selectedShadowId = ""
-            }
+              }
+            , Cmd.none
+            )
+
+        GotRandomColor v ->
+            ( { model | someRandomColor = v }, Cmd.none )
 
 
 
@@ -174,6 +196,7 @@ view model =
                 , onClick AddShadow
                 ]
                 [ text "Add a shadow" ]
+            , p [ style "display" "none" ] [ text (colorToString model.someRandomColor) ]
             ]
         , renderMaybe model.css viewModalExport
         ]
@@ -187,10 +210,11 @@ view model =
 
 main : Program () Model Msg
 main =
-    Browser.sandbox
-        { init = initialModel
+    Browser.element
+        { init = \_ -> ( initialModel, Cmd.none )
         , view = view
         , update = update
+        , subscriptions = \_ -> Sub.none
         }
 
 
@@ -398,7 +422,7 @@ updateShadow s param value =
         Spread ->
             { s | spread = value }
 
-        Color ->
+        ShadowColor ->
             { s | color = value }
 
 
@@ -444,6 +468,7 @@ initialModel =
         ]
         ""
         Nothing
+        { r = 200, g = 200, b = 200 }
 
 
 guybrush : Model
@@ -517,6 +542,7 @@ guybrush =
         ]
         ""
         Nothing
+        { r = 200, g = 200, b = 200 }
 
 
 card : List (Html Msg) -> List (Html Msg) -> List (Html Msg) -> Html Msg
@@ -574,3 +600,17 @@ renderMaybe m f =
 
         Just v ->
             f v
+
+
+randomColor : Random.Generator Color
+randomColor =
+    Random.map3
+        Color
+        (Random.int 0 255)
+        (Random.int 0 255)
+        (Random.int 0 255)
+
+
+colorToString : Color -> String
+colorToString c =
+    "#" ++ Hex.toString c.r ++ Hex.toString c.g ++ Hex.toString c.b
