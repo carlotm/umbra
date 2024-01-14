@@ -12,7 +12,7 @@ $(public_dir)/index.html: src/index.html
 	minify $< > $@
 
 $(public_dir)/app.js: src/Umbra.elm
-	elm make $< --output /tmp/app.js
+	elm make --optimize $< --output /tmp/app.js
 	minify /tmp/app.js > $@
 
 $(public_dir)/app.css: src/umbra.css
