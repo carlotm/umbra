@@ -118,12 +118,7 @@ update msg model =
             )
 
         AddShadow ->
-            ( { model
-                | shadows = makeShadow model :: model.shadows
-                , selectedShadowId = ""
-              }
-            , Random.generate GotRandomColor randomColor
-            )
+            ( model, Random.generate GotRandomColor randomColor )
 
         ExportCSS ->
             ( { model
@@ -145,7 +140,12 @@ update msg model =
             )
 
         GotRandomColor v ->
-            ( { model | someRandomColor = v }, Cmd.none )
+            ( { model
+                | shadows = makeShadow model v :: model.shadows
+                , selectedShadowId = ""
+              }
+            , Cmd.none
+            )
 
 
 
@@ -426,8 +426,8 @@ updateShadow s param value =
             { s | color = value }
 
 
-makeShadow : Model -> Shadow
-makeShadow model =
+makeShadow : Model -> Color -> Shadow
+makeShadow model c =
     let
         ids =
             List.map shadowId model.shadows
@@ -435,7 +435,7 @@ makeShadow model =
         maxId =
             maxOrZero ids
     in
-    Shadow (String.fromInt maxId) "0" "0" "0" "0" "#000000"
+    Shadow (String.fromInt maxId) "0" "0" "0" "0" (colorToString c)
 
 
 maxOrZero : List Int -> Int
