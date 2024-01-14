@@ -33,11 +33,6 @@ type alias Model =
     }
 
 
-type ButtonLevel
-    = Primary
-    | Secondary
-
-
 type Msg
     = SetShape String
     | SetSize String
@@ -62,12 +57,6 @@ type ShadowParam
     | Blur
     | Spread
     | Color
-
-
-type Section
-    = Tools
-    | Shadows
-    | Output
 
 
 
@@ -146,15 +135,47 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div [ class "App" ]
-        [ viewSection Tools (viewTools model) (Just viewToolsFooter)
-        , viewSection Output (viewOutput model) Nothing
-        , viewSection Shadows (viewShadows model) (Just viewShadowsFooter)
-        , case model.css of
-            Nothing ->
-                text ""
-
-            Just css ->
-                viewModalExport css
+        [ card
+            [ h2 [] [ text "Tools" ]
+            , p [ class "Card-subtitle" ] [ text "The base element settings." ]
+            ]
+            [ div [ class "Controls" ]
+                (viewInputShape model.shape
+                    ++ viewInputSize model.size
+                    ++ viewInputColor model.color
+                )
+            ]
+            [ div [ class "ButtonGroup" ]
+                [ button
+                    [ class "Button is-primary"
+                    , onClick ExportCSS
+                    ]
+                    [ text "Export CSS" ]
+                , button
+                    [ class "Button is-secondary"
+                    , onClick Guybrush
+                    ]
+                    [ text "Guybrush!" ]
+                ]
+            ]
+        , card
+            [ h2 [] [ text "Output" ]
+            , p [ class "Card-subtitle" ] [ text "See the result below." ]
+            ]
+            (viewOutput model)
+            []
+        , card
+            [ h2 [] [ text "Shadows list" ]
+            , p [ class "Card-subtitle" ] [ text "The list of all currently visible shadows." ]
+            ]
+            (List.map (\s -> viewShadowItem s model.selectedShadowId) model.shadows)
+            [ button
+                [ class "Button is-primary"
+                , onClick AddShadow
+                ]
+                [ text "Add a shadow" ]
+            ]
+        , renderMaybe model.css viewModalExport
         ]
 
 
@@ -179,38 +200,6 @@ main =
 ----------------------------------------------
 
 
-viewSection : Section -> List (Html Msg) -> Maybe (Html Msg) -> Html Msg
-viewSection sectionType children footer =
-    let
-        ( className, title, subtitle ) =
-            case sectionType of
-                Tools ->
-                    ( "Tools", "Base settings", "The base element settings." )
-
-                Shadows ->
-                    ( "Shadows", "Shadows list", "The list of all currently visible shadows." )
-
-                Output ->
-                    ( "Output", "Result", "See the result real time below." )
-
-        sectionFooter =
-            case footer of
-                Just f ->
-                    div [ class "Section-footer" ] [ f ]
-
-                Nothing ->
-                    text ""
-    in
-    section [ class ("Section " ++ className) ]
-        [ header [ class "Section-header" ]
-            [ h2 [] [ text title ]
-            , p [] [ text subtitle ]
-            ]
-        , div [ class "Section-content" ] children
-        , sectionFooter
-        ]
-
-
 viewModalExport : String -> Html Msg
 viewModalExport css =
     div [ class "Modal is-fullscreen" ]
@@ -221,58 +210,9 @@ viewModalExport css =
                     [ FeatherIcons.x |> FeatherIcons.toHtml [] ]
                 ]
             , div [ class "Modal-content" ]
-                [ code [] [ text ("box-shadow: " ++ css) ] ]
+                [ code [ class "CSSExport" ] [ text ("box-shadow: " ++ css) ] ]
             ]
         ]
-
-
-viewTools : Model -> List (Html Msg)
-viewTools model =
-    [ div [ class "FormField is-shape" ]
-        [ p [ class "FormField-title" ] [ text "Shape" ]
-        , div [ class "FormField-element" ] (viewInputShape model.shape)
-        ]
-    , div [ class "FormField is-size" ]
-        [ p [ class "FormField-title" ] [ text "Size" ]
-        , div [ class "FormField-element" ] (viewInputSize model.size)
-        ]
-    , div [ class "FormField is-color" ]
-        [ p [ class "FormField-title" ] [ text "Color" ]
-        , div [ class "FormField-element" ] (viewInputColor model.color)
-        ]
-    ]
-
-
-viewToolsFooter : Html Msg
-viewToolsFooter =
-    div [ class "Buttons" ]
-        [ btn "Export CSS" ExportCSS Primary
-        , btn "Guybrush!" Guybrush Secondary
-        ]
-
-
-btn : String -> Msg -> ButtonLevel -> Html Msg
-btn t e l =
-    let
-        levelClass =
-            case l of
-                Primary ->
-                    "primary"
-
-                Secondary ->
-                    "secondary"
-    in
-    button [ type_ "button", class ("Button is-" ++ levelClass), onClick e ] [ text t ]
-
-
-viewShadows : Model -> List (Html Msg)
-viewShadows model =
-    List.map (\s -> viewShadowItem s model.selectedShadowId) model.shadows
-
-
-viewShadowsFooter : Html Msg
-viewShadowsFooter =
-    div [] [ btn "Add a shadow" AddShadow Primary ]
 
 
 viewShadowItem : Shadow -> String -> Html Msg
@@ -307,7 +247,7 @@ viewOutput model =
     in
     [ div [ class "Output-canvas" ]
         [ div rootdivStyle [] ]
-    , viewShadowSettings (fetchSelectedShadow model)
+    , viewMaybeShadowSettings (fetchSelectedShadow model)
     ]
 
 
@@ -315,89 +255,100 @@ viewInputShape : String -> List (Html Msg)
 viewInputShape value_ =
     let
         shapes =
-            [ ( "sqr", "Square", FeatherIcons.square )
-            , ( "rnd", "Circle", FeatherIcons.circle )
+            [ ( "sqr", "Square" )
+            , ( "rnd", "Circle" )
             ]
+
+        radios =
+            List.map
+                (\( v, l ) ->
+                    label [ class "Button is-secondary" ]
+                        [ input
+                            [ type_ "radio"
+                            , name "shapes"
+                            , value v
+                            , onInput SetShape
+                            , checked (value_ == v)
+                            ]
+                            []
+                        , p [] [ text l ]
+                        , FeatherIcons.check |> FeatherIcons.toHtml []
+                        ]
+                )
+                shapes
     in
-    List.map
-        (\( v, l, i ) ->
-            div []
-                [ input
-                    [ id ("shape-" ++ v)
-                    , type_ "radio"
-                    , name "shapes"
-                    , value v
-                    , onInput SetShape
-                    , checked (value_ == v)
-                    ]
-                    []
-                , label [ for ("shape-" ++ v) ]
-                    [ text l
-                    , i |> FeatherIcons.withSize 14 |> FeatherIcons.toHtml []
-                    ]
-                ]
-        )
-        shapes
+    [ div [ class "Control Radios" ]
+        [ h3 [] [ text "Shape" ]
+        , div [ class "ButtonGroup" ] radios
+        ]
+    ]
 
 
 viewInputSize : String -> List (Html Msg)
 viewInputSize value_ =
-    [ input [ onInput SetSize, type_ "range", Html.Attributes.min "1", Html.Attributes.max "100" ] []
-    , p [] [ text (value_ ++ "px") ]
+    [ div [ class "Control Range" ]
+        [ label [ for "id_size" ] [ text "Size" ]
+        , div [ class "Range-input" ]
+            [ input
+                [ id "id_size"
+                , onInput SetSize
+                , type_ "range"
+                , Html.Attributes.min "1"
+                , Html.Attributes.max "100"
+                ]
+                []
+            , p [] [ text (value_ ++ "px") ]
+            ]
+        ]
     ]
 
 
 viewInputColor : String -> List (Html Msg)
 viewInputColor value_ =
-    [ label [ style "background-color" value_ ]
-        [ input [ onInput SetColor, type_ "color", value value_ ] []
-        ]
-    ]
+    [ controlColor ( "id_color", "Color" ) value_ SetColor ]
 
 
-viewShadowSettings : Maybe Shadow -> Html Msg
-viewShadowSettings maybeShadow =
+viewMaybeShadowSettings : Maybe Shadow -> Html Msg
+viewMaybeShadowSettings maybeShadow =
     case maybeShadow of
         Just s ->
-            div [ class "Modal is-shadow" ]
-                [ div [ class "Modal-window" ]
-                    [ div [ class "Modal-header" ]
-                        [ h3 [ class "Modal-title" ] [ text ("Shadow #" ++ s.id ++ " settings") ]
-                        , button [ type_ "button", class "Modal-close", onClick ShadowSettingsClose ]
-                            [ FeatherIcons.x |> FeatherIcons.toHtml [] ]
-                        ]
-                    , div [ class "Modal-content" ]
-                        [ label [ class "FormFieldCompact" ]
-                            [ text "Horizontal offset"
-                            , input [type_ "number", value s.xOffset, onInput SetXOffset ] []
-                            ]
-                        , label [ class "FormFieldCompact" ]
-                            [ text "Vertical offset"
-                            , input [type_ "number", value s.yOffset, onInput SetYOffset ] []
-                            ]
-                        , label [ class "FormFieldCompact" ]
-                            [ text "Blur"
-                            , input [type_ "number", value s.blur, onInput SetBlur ] []
-                            ]
-                        , label [ class "FormFieldCompact" ]
-                            [ text "Spread"
-                            , input [type_ "number", value s.spread, onInput SetSpread ] []
-                            ]
-                        , label [ class "FormFieldCompact is-color" ]
-                            [ text "Color"
-                            , div [ style "background-color" s.color ] [ ]
-                            , input [ onInput SetShadowColor, type_ "color", value s.color ] []
-                            ]
-                        , button [ class "Button is-danger is-center has-icon", onClick DeleteSelectedShadow ]
-                            [ text "Delete"
-                            , FeatherIcons.trash |> FeatherIcons.withSize 14 |> FeatherIcons.toHtml []
-                            ]
-                        ]
-                    ]
-                ]
+            viewShadowSettings s
 
         Nothing ->
             text ""
+
+
+viewShadowSettings : Shadow -> Html Msg
+viewShadowSettings s =
+    div [ class "Modal is-shadow" ]
+        [ div [ class "Modal-window" ]
+            [ div [ class "Modal-header" ]
+                [ h3 [ class "Modal-title" ] [ text ("Shadow #" ++ s.id ++ " settings") ]
+                , button [ type_ "button", class "Modal-close", onClick ShadowSettingsClose ]
+                    [ FeatherIcons.x |> FeatherIcons.toHtml [] ]
+                ]
+            , div [ class "Modal-content" ]
+                [ div [ class "Controls is-multi-cols" ]
+                    (viewShadowSettingsControl s)
+                , button [ class "Button is-danger has-icon", onClick DeleteSelectedShadow ]
+                    [ text "Delete"
+                    , FeatherIcons.trash |> FeatherIcons.withSize 14 |> FeatherIcons.toHtml []
+                    ]
+                ]
+            ]
+        ]
+
+
+viewShadowSettingsControl : Shadow -> List (Html Msg)
+viewShadowSettingsControl s =
+    List.map
+        (\( ( i, t ), v, e ) -> controlNumber ( i, t ) v e)
+        [ ( ( "id_shadow_xoffset", "Horizontal Offset" ), s.xOffset, SetXOffset )
+        , ( ( "id_shadow_yoffset", "Vertical offset" ), s.yOffset, SetYOffset )
+        , ( ( "id_shadow_blur", "Blur" ), s.blur, SetBlur )
+        , ( ( "id_shadow_spread", "Spread" ), s.spread, SetSpread )
+        ]
+        ++ [ controlColor ( "id_shadow_color", "Shadow color" ) s.color SetShadowColor ]
 
 
 fetchSelectedShadow : Model -> Maybe Shadow
@@ -566,3 +517,60 @@ guybrush =
         ]
         ""
         Nothing
+
+
+card : List (Html Msg) -> List (Html Msg) -> List (Html Msg) -> Html Msg
+card h c f =
+    div [ class "Card" ]
+        [ renderIf (h /= []) (div [ class "Card-header" ] h)
+        , div [ class "Card-content" ] c
+        , renderIf (f /= []) (div [ class "Card-footer" ] f)
+        ]
+
+
+controlNumber : ( String, String ) -> String -> (String -> Msg) -> Html Msg
+controlNumber ( i, t ) v e =
+    div [ class "Control Number" ]
+        [ label [ for i ] [ text t ]
+        , input [ id i, type_ "number", value v, onInput e ] []
+        ]
+
+
+controlColor : ( String, String ) -> String -> (String -> Msg) -> Html Msg
+controlColor ( i, t ) v e =
+    div [ class "Control Color" ]
+        [ label [ for i ] [ text t ]
+        , label
+            [ class "Color-tile"
+            , style "background-color" v
+            , style "color" v
+            ]
+            [ input
+                [ id i
+                , onInput e
+                , type_ "color"
+                , value v
+                ]
+                []
+            , text "Selected color"
+            ]
+        ]
+
+
+renderIf : Bool -> Html Msg -> Html Msg
+renderIf c e =
+    if c then
+        e
+
+    else
+        text ""
+
+
+renderMaybe : Maybe s -> (s -> Html Msg) -> Html Msg
+renderMaybe m f =
+    case m of
+        Nothing ->
+            text ""
+
+        Just v ->
+            f v

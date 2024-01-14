@@ -6,45 +6,22 @@
   --s4: 2rem;
   --s5: 4rem;
 
-  --border-size: 2px;
-
   --font-sans: droid sans, -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
   --font-serif: Iowan Old Style, Apple Garamond, Baskerville, Times New Roman, Droid Serif, Times, Source Serif Pro, serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
   --font-mono: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
-}
 
-@media (prefers-color-scheme: dark)
-{
-  :root
-  {
-    --bg: #444;
-    --bg-d: #333;
-    --bg-dd: #000;
-    --fg: #ccc;
-    --overlay: rgba(0, 0, 0, 0.8);
-    --accent: yellow;
-    --accent-d: yellow;
-  }
-}
+  --gray01: #d8d8d8;
+  --gray02: #909090;
+  --gray03: #707070;
+  --gray04: #f7f7f7;
+  --black: #303030;
+  --white: #ffffff;
+  --accent01: #2c68f0;
+  --accent02: #005adf;
 
-@media (prefers-color-scheme: light)
-{
-  :root
-  {
-    --bg: #fff;
-    --bg-d: #ddd;
-    --bg-dd: #bbb;
-    --fg: #000;
-    --overlay: rgba(0, 0, 0, 0.6);
-    --accent: blue;
-    --accent-d: #0000aa;
-  }
-}
-
-:root
-{
-    --bg-primary: linear-gradient(to top, var(--accent-d), var(--accent));
-    --bg-secondary: linear-gradient(to top, var(--bg-dd), var(--bg-d));
+  --btn-bg-primary: linear-gradient(0deg, var(--accent02) 0%, var(--accent02) 50%, var(--accent01) 50%, var(--accent01) 100%);
+  --btn-bg-secondary: linear-gradient(0deg, #dcdcdc 0%, #dcdcdc 50%, #e9e9e9 50%, #e9e9e9 100%);
+  --btn-bg-danger: linear-gradient(0deg, #dd0000 0%, #dd0000 50%, #ee0000 50%, #ee0000 100%);
 }
 
 *
@@ -63,30 +40,30 @@
 html { height: 100%; }
 body
 {
-    background-color: var(--bg);
+    background-color: var(--gray01);
     height: 100%;
-    color: var(--fg);
+    color: var(--black);
     line-height: 1;
     font-family: var(--font-sans);
     font-size: 1rem;
 }
-label,
+
 select,
 button,
+label,
 input
 {
     cursor: pointer;
 }
 
-code
+h1,
+h2,
+h3,
+h4,
+h5,
+h6
 {
-    font-family: monospace;
-    font-size: 0.8rem;
-    padding: var(--s1);
-    background-color: var(--bg-d);
-    display: block;
-    line-height: 1.4;
-    border-radius: 4px;
+    font-weight: bold;
 }
 
 /* ====================
@@ -102,179 +79,158 @@ code
     padding: var(--s1);
     grid-template-columns: 300px 1fr;
     grid-template-rows: 1fr 1fr;
-    background-color: var(--bg-d);
+}
+
+.App > .Card:nth-child(2)
+{
+    background-color: var(--white);
+    grid-row: span 2;
+}
+
+.App > .Card:nth-child(2) .Card-content
+{
+    position: relative;
+}
+
+.App > .Card:nth-child(3) .Card-content
+{
+    padding: 0;
 }
 
 /* ====================
- * Sections
+ * Card
  * ==================== */
 
-.Section
+.Card
 {
-    border-radius: 4px;
-    background-color: var(--bg);
-    box-shadow: 0 1px 2px 0 var(--fg);
+    border: 1px solid var(--gray02);
     display: flex;
     flex-direction: column;
     min-height: 0;
+    overflow: hidden;
 }
 
-.Section-header
+.Card-header
 {
     padding: var(--s2);
 }
 
-.Section-header > h2
+.Card-subtitle
 {
-    font-weight: bold;
-}
-
-.Section-header > p
-{
-    opacity: 0.8;
-    margin-top: var(--s1);
     font-size: 0.8rem;
+    line-height: 1.6;
+    opacity: 0.9;
 }
 
-.Section-content
+.Card-content
 {
+    padding: 0 var(--s2);
     overflow-y: scroll;
     flex: 1;
 }
 
-.Section-footer
+.Card-footer
 {
     padding: var(--s2);
 }
 
 /* ====================
- * Forms
+ * Controls
  * ==================== */
 
-.FormField
+.Controls
 {
-    padding: var(--s1) var(--s2);
+    display: grid;
+    gap: var(--s3);
 }
 
-.FormField-title,
-.FormField-label
+.Controls.is-multi-cols
+{
+    grid-template-columns: 1fr 1fr;
+}
+
+.Controls h3,
+.Controls label
 {
     font-size: 0.8rem;
     font-weight: bold;
 }
 
-.FormField-element
+.Control > * + *
 {
     margin-top: var(--s1);
-    width: 100%;
 }
 
-.FormField.is-size .FormField-element
+.Radios svg
 {
-    display: flex;
-    gap: var(--s2);
+    margin-left: var(--s1);
+    stroke: transparent;
 }
 
-.FormField.is-shape .FormField-element
-{
-    display: flex;
-    overflow: hidden;
-    border-radius: 3px;
-    width: fit-content;
-}
-
-.FormField.is-shape [type=radio]
+.Radios [type=radio]
 {
     display: none;
 }
 
-.FormField.is-shape [type=radio]:checked + label
+.Radios p
 {
-    background: var(--bg-primary);
-    color: var(--bg);
+    font-weight: bold;
+    opacity: 0.8;
 }
 
-.FormField.is-shape label
+.Radios [type=radio]:checked ~ p
+{
+    color: var(--accent01);
+    font-weight: bold;
+    transition: color .4s ease-out;
+}
+
+.Radios [type=radio]:checked ~ svg
+{
+    stroke: var(--accent01);
+    transition: stroke .4s ease-out;
+}
+
+.Range-input
 {
     display: flex;
     align-items: center;
     gap: var(--s1);
-    background: var(--bg-secondary);
-    padding: var(--s1);
 }
 
-.FormField.is-color [type=color]
+.Range [type=range]
+{
+    flex: 1;
+}
+
+.Color [type=color]
 {
     display: none;
 }
 
-.FormField.is-color label
+.Color-tile
 {
-    width: 60px;
-    height: 30px;
-    position: relative;
     display: block;
-    border-radius: 3px;
+    border: 1px solid var(--gray03);
+    height: 1.2rem;
 }
 
-.FormFieldCompact
+.Control.Number [type=number]
 {
-    display: flex;
-    flex-direction: column;
-    padding: 0;
     font-size: 0.8rem;
-    font-weight: bold;
-}
-
-.FormFieldCompact.is-color [type=color]
-{
-    display: none;
-}
-
-.FormFieldCompact.is-color > div
-{
-    max-width: 4rem;
-    width: 100%;
-    height: 1.4rem;
-    border-radius: 3px;
-    margin-top: calc(var(--s1) / 2);
-}
-
-.FormFieldCompact [type=number]
-{
-    margin-top: calc(var(--s1) / 2);
-    max-width: 4rem;
-    width: 100%;
-    font-weight: normal;
     padding: var(--s1);
-    border-radius: 3px;
-}
-
-/* ====================
- * Tools
- * ==================== */
-
-.Tools
-{
+    max-width: 4rem;
+    border: 1px solid var(--gray03);
+    display: block;
 }
 
 /* ====================
  * Output
  * ==================== */
 
-.Output
-{
-    grid-row: span 2;
-}
-
-.Output > .Section-content
-{
-    flex: 1;
-    position: relative;
-}
-
 .Output-canvas
 {
+    background-color: var(--white);
     position: relative;
     display: flex;
     justify-content: center;
@@ -301,7 +257,12 @@ code
 
 .ShadowItem
 {
-    margin: 0 var(--s1);
+    border-top: 1px solid var(--gray02);
+}
+
+.ShadowItem:last-child
+{
+    border-bottom: 1px solid var(--gray02);
 }
 
 .ShadowItem > input
@@ -317,17 +278,18 @@ code
 
 .ShadowItem > label
 {
-    border-radius: 3px;
     display: flex;
     width: 100%;
     justify-content: space-between;
     align-items: center;
-    padding: var(--s1);
+    padding: var(--s1) var(--s2);
+    background-color: var(--gray01);
+    transition: background-color .2s ease-out;
 }
 
 .ShadowItem > label:hover
 {
-    background-color: var(--bg-d);
+    background-color: var(--white);
 }
 
 /* ====================
@@ -345,7 +307,7 @@ code
     top: 0;
     left: 0;
     z-index: 9;
-    background-color: var(--overlay);
+    background-color: rgba(0, 0, 0, 0.8);
 }
 
 .Modal.is-shadow
@@ -353,14 +315,14 @@ code
     position: absolute;
     z-index: 9;
     left: var(--s1);
-    max-width: 14rem;
+    max-width: 18rem;
     width: 100%;
     bottom: var(--s1);
 }
 
 .Modal.is-shadow .Modal-window
 {
-    background-color: var(--bg-d);
+    background-color: var(--gray01);
 }
 
 .Modal.is-shadow .Modal-content > * + *
@@ -381,9 +343,8 @@ code
 
 .Modal-window
 {
-    background-color: var(--bg);
-    box-shadow: 0 1px 2px 0 var(--fg);
-    border-radius: 4px;
+    background-color: var(--white);
+    border: 1px solid var(--gray02);
     max-width: 500px;
     width: 100%;
 }
@@ -397,7 +358,7 @@ code
 .Modal-title
 {
     flex: 1;
-    padding: var(--s1);
+    padding: var(--s2);
     font-weight: bold;
 }
 
@@ -409,66 +370,64 @@ code
 
 .Modal-content
 {
-    padding: var(--s4) var(--s1) var(--s1) var(--s1);
+    padding: var(--s2);
+}
+
+.CSSExport
+{
+    background-color: var(--gray01);
+    display: block;
+    line-height: 1.6;
+    font-family: monospace;
+    padding: var(--s2);
+    border: 1px solid var(--gray02);
 }
 
 /* ====================
  * Buttons
  * ==================== */
 
-.Buttons
+.ButtonGroup
 {
     display: flex;
 }
 
-.Buttons > .Button
+.ButtonGroup > .Button + .Button
 {
-    border-radius: 0;
-}
-
-.Buttons > .Button:first-child
-{
-    border-top-left-radius: 3px;
-    border-bottom-left-radius: 3px;
-}
-
-.Buttons > .Button:last-child
-{
-    border-top-right-radius: 3px;
-    border-bottom-right-radius: 3px;
+    border-left: 0
 }
 
 .Button
 {
+    border: 1px solid var(--gray03);
+    cursor: pointer;
     display: flex;
     align-items: center;
+    justify-content: center;
     font-size: 0.8rem;
     padding: var(--s1) var(--s2);
-    border-radius: 3px;
-    line-height: 1;
 }
 
 .Button.is-primary
 {
-    background: linear-gradient(to top, var(--accent-d), var(--accent));
-    color: var(--bg);
+    background: var(--btn-bg-primary);
+    color: var(--white);
+    border: 1px solid var(--accent);
 }
 
 .Button.is-secondary
 {
-    background: linear-gradient(to top, var(--bg-dd), var(--bg-d));
-    color: var(--fg);
+    background: var(--btn-bg-secondary);
+    color: var(--black);
+    box-shadow: inset 0 0 0 1px var(--gray04);
 }
 
 .Button.is-danger
 {
-    background: linear-gradient(to top, rgb(100, 0, 0), rgb(255, 0, 0));
+    background: var(--btn-bg-danger);
     color: white;
-}
-
-.Button.is-center
-{
-    justify-content: center;
+    border: 1px solid #990000;
+    box-shadow: inset 0 0 0 1px #ff0000;
 }
 
 .Button.has-icon
