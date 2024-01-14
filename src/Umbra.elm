@@ -32,7 +32,6 @@ type alias Model =
     , shadows : List Shadow
     , selectedShadowId : String
     , css : Maybe String
-    , someRandomColor : Color
     }
 
 
@@ -196,7 +195,6 @@ view model =
                 , onClick AddShadow
                 ]
                 [ text "Add a shadow" ]
-            , p [ style "display" "none" ] [ text (colorToString model.someRandomColor) ]
             ]
         , renderMaybe model.css viewModalExport
         ]
@@ -468,7 +466,6 @@ initialModel =
         ]
         ""
         Nothing
-        { r = 200, g = 200, b = 200 }
 
 
 guybrush : Model
@@ -542,7 +539,6 @@ guybrush =
         ]
         ""
         Nothing
-        { r = 200, g = 200, b = 200 }
 
 
 card : List (Html Msg) -> List (Html Msg) -> List (Html Msg) -> Html Msg
