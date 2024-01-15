@@ -1,4 +1,5 @@
 public_dir = $(abspath ./_site)
+ELM_OPTS ?= --debug
 
 .PHONY: all clean
 
@@ -12,7 +13,7 @@ $(public_dir)/index.html: src/index.html $(public_dir)/app.js $(public_dir)/app.
 	minify $< > $@
 
 $(public_dir)/app.js: src/Umbra.elm
-	elm make --optimize $< --output /tmp/app.js
+	elm make $(ELM_OPTS) $< --output /tmp/app.js
 	minify /tmp/app.js > $@
 
 $(public_dir)/app.css: src/umbra.css

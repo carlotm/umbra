@@ -22,7 +22,7 @@ jobs:
       - name: Install devbox
         uses: jetpack-io/devbox-install-action@v0.7.0
       - name: Build app
-        run: devbox run make clean all
+        run: devbox run deploy
       - name: Upload artifacts
         uses: actions/upload-pages-artifact@v3
   deploy:
