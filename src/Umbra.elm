@@ -1,11 +1,13 @@
 module Umbra exposing (main)
 
 import Browser
+import Browser.Events exposing (onKeyUp)
 import FeatherIcons
 import Hex
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
+import Json.Decode as Decode
 import Random
 
 
@@ -52,6 +54,8 @@ type Msg
     | Guybrush
     | CloseExportModal
     | GotRandomColor Color
+    | PressedLetter Char
+    | PressedControl String
 
 
 type ShadowParam
@@ -146,6 +150,20 @@ update msg model =
             , Cmd.none
             )
 
+        PressedControl "Escape" ->
+            ( { model
+                | css = Nothing
+                , selectedShadowId = ""
+              }
+            , Cmd.none
+            )
+
+        PressedControl _ ->
+            ( model, Cmd.none )
+
+        PressedLetter _ ->
+            ( model, Cmd.none )
+
 
 
 ----------------------------------------------
@@ -212,7 +230,7 @@ main =
         { init = \_ -> ( initialModel, Cmd.none )
         , view = view
         , update = update
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = \_ -> onKeyUp keyDecoder
         }
 
 
@@ -610,3 +628,18 @@ randomColor =
 colorToString : Color -> String
 colorToString c =
     "#" ++ Hex.toString c.r ++ Hex.toString c.g ++ Hex.toString c.b
+
+
+keyDecoder : Decode.Decoder Msg
+keyDecoder =
+    Decode.map toKey (Decode.field "key" Decode.string)
+
+
+toKey : String -> Msg
+toKey string =
+    case String.uncons string of
+        Just ( char, "" ) ->
+            PressedLetter char
+
+        _ ->
+            PressedControl string
