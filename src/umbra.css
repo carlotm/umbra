@@ -405,7 +405,7 @@ h6
     align-items: center;
     justify-content: center;
     font-size: 0.8rem;
-    padding: var(--s1) var(--s2);
+    padding: var(--s1) calc(var(--s2) / 1.2);
 }
 
 .Button.is-primary

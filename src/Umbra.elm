@@ -3,12 +3,19 @@ module Umbra exposing (main)
 import Browser
 import Browser.Events exposing (onKeyUp)
 import FeatherIcons
+import File
+import File.Download as Download
+import File.Select as Select
 import Hex
 import Html exposing (..)
-import Html.Attributes exposing (..)
+import Html.Attributes exposing (checked, class, classList, for, id, name, style, type_, value)
 import Html.Events exposing (onClick, onInput)
-import Json.Decode as Decode
+import Json.Decode as Decode exposing (Decoder, decodeString, nullable, string)
+import Json.Decode.Pipeline exposing (hardcoded, required)
+import Json.Encode as E
+import Json.Encode.Extra as EE
 import Random
+import Task
 
 
 
@@ -37,6 +44,52 @@ type alias Model =
     }
 
 
+encodeModel : Model -> E.Value
+encodeModel m =
+    E.object
+        [ ( "shape", E.string m.shape )
+        , ( "size", E.string m.size )
+        , ( "color", E.string m.color )
+        , ( "shadows", E.list encodeShadow m.shadows )
+        , ( "selectedShadowId", E.string m.selectedShadowId )
+        , ( "css", EE.maybe E.string m.css )
+        ]
+
+
+encodeShadow : Shadow -> E.Value
+encodeShadow s =
+    E.object
+        [ ( "id", E.string s.id )
+        , ( "xOffset", E.string s.xOffset )
+        , ( "yOffset", E.string s.yOffset )
+        , ( "blur", E.string s.blur )
+        , ( "spread", E.string s.spread )
+        , ( "color", E.string s.color )
+        ]
+
+
+modelDecoder : Decoder Model
+modelDecoder =
+    Decode.succeed Model
+        |> required "shape" string
+        |> required "size" string
+        |> required "color" string
+        |> required "shadows" (Decode.list shadowDecoder)
+        |> hardcoded ""
+        |> required "css" (nullable string)
+
+
+shadowDecoder : Decoder Shadow
+shadowDecoder =
+    Decode.succeed Shadow
+        |> required "id" string
+        |> required "xOffset" string
+        |> required "yOffset" string
+        |> required "blur" string
+        |> required "spread" string
+        |> required "color" string
+
+
 type Msg
     = SetShape String
     | SetSize String
@@ -56,6 +109,10 @@ type Msg
     | GotRandomColor Color
     | PressedLetter Char
     | PressedControl String
+    | Load
+    | Save
+    | FileSelected File.File
+    | FileLoaded String
 
 
 type ShadowParam
@@ -164,6 +221,25 @@ update msg model =
         PressedLetter _ ->
             ( model, Cmd.none )
 
+        Save ->
+            ( model, Download.string "umbra.json" "application/json" (E.encode 0 (encodeModel model)) )
+
+        Load ->
+            ( model, Select.file [ "application/json" ] FileSelected )
+
+        FileSelected file ->
+            ( model, Task.perform FileLoaded (File.toString file) )
+
+        FileLoaded content ->
+            ( case decodeString modelDecoder content of
+                Ok v ->
+                    v
+
+                Err _ ->
+                    initialModel
+            , Cmd.none
+            )
+
 
 
 ----------------------------------------------
@@ -189,7 +265,17 @@ view model =
                     [ class "Button is-primary"
                     , onClick ExportCSS
                     ]
-                    [ text "Export CSS" ]
+                    [ text "CSS" ]
+                , button
+                    [ class "Button is-secondary"
+                    , onClick Load
+                    ]
+                    [ text "Load" ]
+                , button
+                    [ class "Button is-secondary"
+                    , onClick Save
+                    ]
+                    [ text "Save" ]
                 , button
                     [ class "Button is-secondary"
                     , onClick Guybrush
